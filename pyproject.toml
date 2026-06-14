@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=69.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "diablo"
+version = "0.4.0"
+description = "Diablo - Personal AI Operating System"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "ollama>=0.4.7",
+    "httpx>=0.27.0",
+    "pydantic>=2.7.0",
+    "pydantic-settings>=2.3.0",
+    "python-dotenv>=1.0.1",
+    "chromadb>=0.5.0",
+    "psutil>=5.9.0",
+    "beautifulsoup4>=4.12.0",
+    "duckduckgo-search>=6.2.0",
+    "tzdata>=2024.1",
+    "pyautogui>=0.9.54",
+    "pywin32>=306",
+    "pycaw>=20240210",
+    "Pillow>=10.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.2.0",
+    "pytest-mock>=3.14.0",
+]
+voice = [
+    "pyttsx3>=2.90",
+    "sounddevice>=0.4.8",
+    "openai-whisper>=20230611",
+]
+
+[project.scripts]
+diablo = "main:main"
+
+[tool.setuptools]
+py-modules = ["config", "main"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["agents*", "core*", "database*", "llm*", "memory*", "system*", "tools*", "ui*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

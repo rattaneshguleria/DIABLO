@@ -1,0 +1,25 @@
+# Phase 1-4 dependencies. Additional packages are added in later phases.
+
+ollama>=0.4.7
+httpx>=0.27.0
+pydantic>=2.7.0
+pydantic-settings>=2.3.0
+python-dotenv>=1.0.1
+chromadb>=0.5.0
+psutil>=5.9.0
+beautifulsoup4>=4.12.0
+duckduckgo-search>=6.2.0
+tzdata>=2024.1
+pyautogui>=0.9.54
+pywin32>=306
+pycaw>=20240210
+Pillow>=10.0.0
+
+# Phase 5 voice assistant dependencies
+pyttsx3>=2.90
+sounddevice>=0.4.8
+openai-whisper>=20230611
+
+# Development and testing
+pytest>=8.2.0
+pytest-mock>=3.14.0
