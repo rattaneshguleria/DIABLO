@@ -24,7 +24,7 @@ class Settings(BaseSettings):
 
     # Application
     app_name: str = "Diablo"
-    app_version: str = "0.4.0"
+    app_version: str = "0.6.0"
     log_level: str = "INFO"
     log_to_file: bool = True
 
@@ -76,6 +76,13 @@ class Settings(BaseSettings):
     voice_input_duration_seconds: int = 8
     voice_sample_rate: int = 16000
 
+    # Vision (Phase 6)
+    vision_enabled: bool = True
+    vision_model: str = "llava"
+    vision_temperature: float = 0.4
+    vision_max_tokens: int = 1024
+    vision_max_image_dimension: int = 1024
+
     @field_validator("log_level")
     @classmethod
     def validate_log_level(cls, value: str) -> str:
@@ -115,6 +122,20 @@ class Settings(BaseSettings):
     def validate_voice_settings(cls, value: int) -> int:
         if value < 1:
             raise ValueError("voice audio duration and sample rate must be positive")
+        return value
+
+    @field_validator("vision_temperature")
+    @classmethod
+    def validate_vision_temperature(cls, value: float) -> float:
+        if not 0.0 <= value <= 2.0:
+            raise ValueError("vision_temperature must be between 0.0 and 2.0")
+        return value
+
+    @field_validator("vision_max_image_dimension")
+    @classmethod
+    def validate_vision_dimension(cls, value: int) -> int:
+        if value < 64:
+            raise ValueError("vision_max_image_dimension must be at least 64")
         return value
 
     def model_post_init(self, __context: object) -> None:

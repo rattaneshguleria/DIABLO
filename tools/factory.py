@@ -20,6 +20,7 @@ from tools.builtin.desktop.input_tools import MouseClickTool, PressHotkeyTool, T
 from tools.builtin.desktop.screen_tools import ReadClipboardTool, TakeScreenshotTool
 from tools.builtin.file_tools import ListDirectoryTool, ReadFileTool, SearchFilesTool, WriteFileTool
 from tools.builtin.system_tools import RunCommandTool, SystemInfoTool
+from tools.builtin.vision.image_tools import DescribeImageTool, DescribeScreenTool
 from tools.builtin.web_tools import FetchUrlTool, WebSearchTool
 from tools.executor import ToolExecutor
 from tools.registry import ToolRegistry
@@ -43,6 +44,10 @@ def build_tool_registry(settings: Settings) -> ToolRegistry:
     workspace = settings.tool_workspace_dir
     if workspace is not None and not workspace.is_absolute():
         workspace = settings.base_dir / workspace
+
+    screenshot_dir = settings.screenshot_dir
+    if not screenshot_dir.is_absolute():
+        screenshot_dir = settings.data_dir / screenshot_dir
 
     tools: list[Tool] = [
         CalculatorTool(),
@@ -68,9 +73,6 @@ def build_tool_registry(settings: Settings) -> ToolRegistry:
 
     if settings.desktop_control_enabled:
         _configure_pyautogui()
-        screenshot_dir = settings.screenshot_dir
-        if not screenshot_dir.is_absolute():
-            screenshot_dir = settings.data_dir / screenshot_dir
 
         tools.extend(
             [
@@ -87,6 +89,14 @@ def build_tool_registry(settings: Settings) -> ToolRegistry:
                 MouseClickTool(),
                 TypeTextTool(),
                 PressHotkeyTool(),
+            ]
+        )
+
+    if settings.vision_enabled:
+        tools.extend(
+            [
+                DescribeImageTool(settings=settings),
+                DescribeScreenTool(settings=settings, screenshot_dir=screenshot_dir),
             ]
         )
 

@@ -20,6 +20,10 @@ pyttsx3>=2.90
 sounddevice>=0.4.8
 openai-whisper>=20230611
 
+# Phase 6 vision: no new packages required.
+# Uses the existing `ollama` client (multimodal chat) and `Pillow` (image resizing).
+# You do need a multimodal model pulled in Ollama, e.g.: ollama pull llava
+
 # Development and testing
 pytest>=8.2.0
 pytest-mock>=3.14.0
