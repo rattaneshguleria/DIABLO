@@ -1,63 +1,153 @@
-# Diablo
+# 🔥 DIABLO — AI Voice Assistant
 
-**Diablo** is a personal AI operating system inspired by JARVIS.
+<div align="center">
 
-**Current status: Phase 6 — Vision**
+
+
+# 🔥 DIABLO
+
+### Your Personal AI Voice Assistant
+
+*"Talk naturally. Let DIABLO handle the rest."*
+
+![Python](https://img.shields.io/badge/Python-3.10-blue?style=for-the-badge&logo=python)
+![Whisper](https://img.shields.io/badge/OpenAI-Whisper-black?style=for-the-badge)
+![Gemini](https://img.shields.io/badge/Google-Gemini-4285F4?style=for-the-badge&logo=google)
+![AI](https://img.shields.io/badge/AI-Voice%20Assistant-red?style=for-the-badge)
+
+</div>
 
 ---
 
-## What works now
+# 📖 Overview
 
-- CLI chat with local Ollama LLM
-- Persistent memory (SQLite + ChromaDB)
-- Tool calling (calculator, files, web, commands)
-- **Desktop control** — apps, screenshots, clipboard, volume, mouse, keyboard
-- **Voice assistant** — wake words, speech recognition, and spoken responses
-- **Vision** — describe images and screenshots, or answer questions about them
-- Safety confirmations and audit logging
-- 55+ unit tests
+DIABLO is a desktop AI voice assistant that listens to spoken commands, converts speech to text, reasons with a large language model, and responds naturally using text-to-speech. It is designed as a modular assistant that can be extended with automation, desktop control, and custom skills.
 
 ---
 
-## Quick start
+# ✨ Features
 
-```bash
-cd ~/Documents/diablo
-source .venv/Scripts/activate
-pip install -r requirements.txt
-ollama pull llava
-python main.py --check
-python main.py
-python main.py --voice
+- 🎙️ Speech-to-Text (Whisper)
+- 🤖 AI-powered conversations
+- 🔊 Text-to-Speech responses
+- 🖥️ Desktop automation ready
+- ⚡ Modular Python architecture
+- 🔌 Easy integration with LLM providers
+- 🧩 Extensible command system
+
+---
+
+# 🏗️ Architecture
+
+```mermaid
+flowchart LR
+A[🎤 Microphone] --> B[Whisper STT]
+B --> C[Command Processor]
+C --> D[LLM]
+D --> E[Response Generator]
+E --> F[pyttsx3 TTS]
+F --> G[🔊 Speaker]
 ```
 
 ---
 
-## Try these
+# 🚀 Workflow
 
-```
-Open Chrome
-Launch VS Code
-Take a screenshot
-What's on my clipboard?
-Set volume to 40
-Create a folder called test_notes
-List running applications
-What's on my screen right now?
-Describe the image at data/photo.png
+1. Capture voice.
+2. Convert speech to text.
+3. Process command.
+4. Generate AI response.
+5. Speak the response.
+6. Wait for the next command.
+
+---
+
+# 🛠️ Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| Language | Python |
+| STT | Whisper |
+| TTS | pyttsx3 |
+| Audio | sounddevice |
+| AI | Gemini / Compatible LLM |
+| Environment | VS Code |
+
+---
+
+# 📂 Suggested Structure
+
+```text
+DIABLO/
+├── assets/
+│   ├── banner.png
+│   ├── diablo-avatar.png
+│   └── demo.gif
+├── voice.py
+├── assistant.py
+├── requirements.txt
+├── README.md
+└── .gitignore
 ```
 
 ---
 
-## Documentation
+# 📸 README Assets
 
-- [Phase 3](docs/phase3.md) — Tool calling
-- [Phase 4](docs/phase4.md) — Desktop control
-- [Phase 5](docs/phase5.md) — Voice assistant
-- [Phase 6](docs/phase6.md) — Vision
+Place these files inside `assets/`:
+
+- banner.png
+- diablo-avatar.png
+- demo.gif
+- architecture.png
+- workflow.png
 
 ---
 
-## Next phase
+# 🧠 Future Roadmap
 
-**Phase 7: Autonomous Planning** — multi-step task planning, self-correction, and longer-running agentic workflows that chain tools together without a human prompting each step.
+- Wake word activation
+- Smart home control
+- Browser automation
+- Calendar integration
+- Email assistant
+- Local knowledge base
+- Vision support
+- Plugin system
+
+---
+
+# 🤝 Contributing
+
+Fork → Branch → Commit → Pull Request.
+
+---
+
+# 📜 License
+
+MIT License.
+
+---
+
+# 👨‍💻 Developer
+
+**Rattanesh Guleria**  
+B.Tech Computer Science Engineering  
+Lovely Professional University
+
+GitHub: https://github.com/rattaneshguleria
+
+---
+
+# 🎨 Branding Notes
+
+- Use a dark cyberpunk theme.
+- Use the provided avatar as `assets/diablo-avatar.png`.
+- Create a matching banner with purple/black gradients and glowing red accents.
+- Add screenshots and a demo GIF for the best presentation.
+
+<div align="center">
+
+## ⭐ Star the repository if you like the project!
+
+</div>
