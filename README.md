@@ -113,6 +113,7 @@ Place these files inside `assets/`:
 - Email assistant
 - Local knowledge base
 - Vision support
+- Autonomous multi-step planning with recovery
 - Plugin system
 
 ---

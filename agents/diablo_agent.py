@@ -7,6 +7,7 @@ from collections.abc import Callable, Iterator
 from dataclasses import dataclass, field
 
 from core.exceptions import DiabloError
+from agents.planner import TaskPlanner
 from llm.base import ChatMessage, LLMProvider, LLMResponse
 from memory.manager import MemoryManager
 from memory.short_term import ShortTermMemory
@@ -42,9 +43,9 @@ Current capabilities:
 - Tool calling for calculations, files, system info, web search, and safe commands
 - Desktop control: launch/close apps, screenshots, clipboard, volume, mouse, and keyboard
 - Voice assistant: wake words, speech recognition, and spoken responses
-- Planning guidance (advisory only, not fully autonomous yet)
+- Bounded autonomous planning with tool-result recovery
 
-You can listen for wake words and speak your responses. You do not yet have vision.
+You can listen for wake words, speak your responses, and inspect images on demand.
 Be honest about current limitations when asked.
 """
 
@@ -93,6 +94,9 @@ class DiabloAgent:
         max_history_messages: int = 20,
         stream_responses: bool = True,
         max_tool_steps: int = 5,
+        max_plan_steps: int = 8,
+        max_recovery_attempts: int = 2,
+        autonomous_planning_enabled: bool = True,
         tools_enabled: bool = True,
         on_tool_activity: ToolActivityCallback | None = None,
     ) -> None:
@@ -101,8 +105,20 @@ class DiabloAgent:
         self.tool_executor = tool_executor
         self.stream_responses = stream_responses
         self.max_tool_steps = max_tool_steps
+        self.autonomous_planning_enabled = autonomous_planning_enabled
         self.tools_enabled = tools_enabled and tool_executor is not None
         self.on_tool_activity = on_tool_activity
+        self.planner = (
+            TaskPlanner(
+                llm,
+                tool_executor,
+                max_steps=max_plan_steps,
+                max_recovery_attempts=max_recovery_attempts,
+                on_activity=on_tool_activity,
+            )
+            if self.tools_enabled and autonomous_planning_enabled and tool_executor is not None
+            else None
+        )
 
         if memory is not None:
             self.state = memory.short_term
@@ -190,6 +206,17 @@ class DiabloAgent:
     def _chat_with_tools(self, user_message: str, messages: list[ChatMessage]) -> str:
         if self.tool_executor is None:
             raise DiabloError("Tool executor is not configured")
+
+        if self.planner is not None:
+            execution = self.planner.execute(messages)
+            self._finalize_response(user_message, execution.response)
+            logger.info(
+                "Autonomous plan finished completed=%s steps=%d recoveries=%d",
+                execution.completed,
+                execution.tool_steps,
+                execution.recovery_attempts,
+            )
+            return execution.response
 
         tools = self.tool_executor.registry.schemas()
         working_messages = list(messages)

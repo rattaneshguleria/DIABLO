@@ -58,6 +58,9 @@ def build_agent(
         max_history_messages=settings.max_history_messages,
         stream_responses=settings.stream_responses,
         max_tool_steps=settings.max_tool_steps,
+        max_plan_steps=settings.max_plan_steps,
+        max_recovery_attempts=settings.max_recovery_attempts,
+        autonomous_planning_enabled=settings.autonomous_planning_enabled,
         tools_enabled=settings.tools_enabled,
         on_tool_activity=tool_activity_callback,
     )

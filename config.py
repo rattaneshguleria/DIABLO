@@ -24,7 +24,7 @@ class Settings(BaseSettings):
 
     # Application
     app_name: str = "Diablo"
-    app_version: str = "0.6.0"
+    app_version: str = "0.7.0"
     log_level: str = "INFO"
     log_to_file: bool = True
 
@@ -56,6 +56,9 @@ class Settings(BaseSettings):
     # Tools (Phase 3)
     tools_enabled: bool = True
     max_tool_steps: int = 5
+    autonomous_planning_enabled: bool = True
+    max_plan_steps: int = 8
+    max_recovery_attempts: int = 2
     require_confirmation_for_commands: bool = True
     allowed_command_prefixes: str = "python,pip,git,dir,ls,echo,cd,type,pytest"
     web_search_enabled: bool = True
@@ -111,6 +114,20 @@ class Settings(BaseSettings):
     def validate_tool_steps(cls, value: int) -> int:
         if value < 1:
             raise ValueError("max_tool_steps must be at least 1")
+        return value
+
+    @field_validator("max_plan_steps")
+    @classmethod
+    def validate_plan_steps(cls, value: int) -> int:
+        if value < 1:
+            raise ValueError("max_plan_steps must be at least 1")
+        return value
+
+    @field_validator("max_recovery_attempts")
+    @classmethod
+    def validate_recovery_attempts(cls, value: int) -> int:
+        if value < 0:
+            raise ValueError("max_recovery_attempts cannot be negative")
         return value
 
     @field_validator(
