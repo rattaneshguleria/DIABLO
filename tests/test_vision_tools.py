@@ -7,6 +7,7 @@ from unittest.mock import MagicMock
 import pytest
 
 from config import Settings
+from core.exceptions import ToolExecutionError
 from tools.builtin.vision.image_tools import DescribeImageTool, DescribeScreenTool
 
 
@@ -60,6 +61,15 @@ def test_describe_image_uses_custom_question(settings, tmp_path, monkeypatch):
     assert result.success is True
     called_prompt = mock_client.describe.call_args[0][0]
     assert called_prompt == "Is there a cat?"
+
+
+def test_describe_image_rejects_path_outside_workspace(settings, tmp_path) -> None:
+    outside_image = tmp_path.parent / "outside.png"
+    outside_image.write_bytes(b"fake-image-bytes")
+    tool = DescribeImageTool(settings=settings, vision_client=MagicMock())
+
+    with pytest.raises(ToolExecutionError, match="outside the permitted workspace"):
+        tool.run(path=str(outside_image))
 
 
 def test_describe_screen_takes_screenshot_and_describes(settings, tmp_path, monkeypatch):

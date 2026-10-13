@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 from typing import Any
 
 from config import Settings
@@ -10,6 +9,7 @@ from llm.vision import VisionClient, build_vision_client
 from system.image import encode_image_to_base64
 from system.screen import take_screenshot
 from tools.base import RiskLevel, Tool, ToolParameter, ToolResult
+from tools.safety import resolve_safe_path
 
 DEFAULT_IMAGE_PROMPT = "Describe this image in clear, useful detail."
 DEFAULT_SCREEN_PROMPT = (
@@ -49,9 +49,14 @@ class DescribeImageTool(Tool):
         if not raw_path:
             return ToolResult(success=False, output="", error="'path' is required")
 
-        path = Path(str(raw_path)).expanduser()
-        if not path.is_absolute():
-            path = self.settings.base_dir / path
+        workspace = self.settings.tool_workspace_dir
+        if workspace is not None and not workspace.is_absolute():
+            workspace = self.settings.base_dir / workspace
+        path = resolve_safe_path(
+            str(raw_path),
+            workspace=workspace,
+            base_dir=self.settings.base_dir,
+        )
 
         question = kwargs.get("question") or DEFAULT_IMAGE_PROMPT
 

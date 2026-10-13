@@ -58,16 +58,28 @@ def resolve_safe_path(
     workspace: Path | None,
     base_dir: Path,
 ) -> Path:
-    """Resolve and validate a filesystem path for tool access."""
+    """Resolve a path and ensure it remains inside the permitted workspace.
+
+    Resolving before the containment check makes paths that traverse through an
+    existing symlink subject to the same boundary as ordinary ``..`` traversal.
+    """
     if not path or not path.strip():
         raise ToolExecutionError("Path cannot be empty")
 
+    root = (workspace or base_dir).expanduser().resolve()
     candidate = Path(path.strip()).expanduser()
     if not candidate.is_absolute():
-        root = workspace or base_dir
         candidate = (root / candidate).resolve()
     else:
         candidate = candidate.resolve()
+
+    try:
+        candidate.relative_to(root)
+    except ValueError as exc:
+        raise ToolExecutionError(
+            "Path is outside the permitted workspace",
+            details=f"Workspace: {root}; requested path: {candidate}",
+        ) from exc
 
     lowered = str(candidate).lower()
     for part in BLOCKED_PATH_PARTS:
